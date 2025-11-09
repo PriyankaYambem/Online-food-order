@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBite - All Restaurants</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Specific styles for the Restaurants page */
+        .restaurants-hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80') no-repeat center center/cover;
+            color: #fff;
+            text-align: center;
+            padding: 80px 0;
+            margin-bottom: 40px;
+        }
+
+        .restaurants-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .restaurants-hero p {
+            font-size: 1.2rem;
+            color: #eee;
+        }
+
+        .filter-sort-bar {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-sort-bar .search-input {
+            flex-grow: 1; /* Takes up available space */
+            min-width: 200px; /* Ensures search input isn't too small */
+        }
+
+        .filter-sort-bar input[type="text"],
+        .filter-sort-bar select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-sort-bar input[type="text"]:focus,
+        .filter-sort-bar select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .filter-group {
+            flex-shrink: 0; /* Prevents shrinking */
+            min-width: 150px; /* Minimum width for dropdowns */
+        }
+
+        /* Reusing .restaurants-grid and .restaurant-card from style.css */
+        .restaurants-listing {
+            padding-bottom: 60px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            gap: 10px;
+        }
+
+        .pagination button,
+        .pagination span {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
+            font-size: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .pagination button:hover:not(.disabled) {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .pagination .current-page {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .pagination button.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+            background: #f0f0f0;
+            color: #aaa;
+        }
+
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .filter-sort-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-group, .filter-sort-bar .search-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">QuickBite</div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="restaurants.html" class="active-link">Restaurants</a></li>
+                    <li><a href="how-it-works.html">How it Works</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="login.html">Sign In / Register</a>
+                <a href="cart.html" class="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="restaurants-hero">
+            <div class="container">
+                <h1>All Restaurants</h1>
+                <p>Explore a world of flavors delivered to your doorstep.</p>
+            </div>
+        </section>
+
+        <section class="filter-sort-section container">
+            <div class="filter-sort-bar">
+                <div class="search-input">
+                    <input type="text" placeholder="Search by restaurant name or cuisine">
+                </div>
+                <div class="filter-group">
+                    <select>
+                        <option value="">Cuisine</option>
+                        <option value="indian">Indian</option>
+                        <option value="italian">Italian</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="mexican">Mexican</option>
+                        <!-- More options -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select>
+                        <option value="">Dietary</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="gluten-free">Gluten-Free</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select>
+                        <option value="">Price Range</option>
+                        <option value="1">₹</option>
+                        <option value="2">₹₹</option>
+                        <option value="3">₹₹₹</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select>
+                        <option value="">Rating</option>
+                        <option value="4+">4+ Stars</option>
+                        <option value="3+">3+ Stars</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select>
+                        <option value="">Sort By</option>
+                        <option value="popularity">Popularity</option>
+                        <option value="a-z">A-Z</option>
+                        <option value="rating">Rating</option>
+                        <option value="delivery-fee">Delivery Fee</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="restaurants-listing container">
+            <div class="restaurants-grid">
+                <!-- Example Restaurant Card 1 -->
+                <div class="restaurant-card">
+                    <img src="curry house.png" alt="Restaurant Name">
+                    <h3>Curry House</h3>
+                    <p class="cuisine">Indian, North Indian</p>
+                    <div class="rating">
+                        <i class="fas fa-star"></i> 4.6
+                    </div>
+                    <p class="delivery-time">Est. Delivery: 30-45 min</p>
+                    <p class="delivery-fee">Delivery Fee: ₹30</p>
+                    <p class="min-order">Min. Order: ₹150</p>
+                    <a href="menu.html?restaurant=curry-house" class="btn">View Menu</a>
+                </div>
+                <!-- Example Restaurant Card 2 -->
+                <div class="restaurant-card">
+                    <img src="pizza mania.png" alt="Restaurant Name">
+                    <h3>Pizza Mania</h3>
+                    <p class="cuisine">Italian, Pizza</p>
+                    <div class="rating">
+                        <i class="fas fa-star"></i> 4.3
+                    </div>
+                    <p class="delivery-time">Est. Delivery: 25-40 min</p>
+                    <p class="delivery-fee">Delivery Fee: ₹25</p>
+                    <p class="min-order">Min. Order: ₹100</p>
+                    <a href="menu.html?restaurant=pizza-mania" class="btn">View Menu</a>
+                </div>
+                <!-- Example Restaurant Card 3 -->
+                <div class="restaurant-card">
+                    <img src="wor & roll.png" alt="Restaurant Name">
+                    <h3>Wok & Roll</h3>
+                    <p class="cuisine">Chinese, Pan-Asian</p>
+                    <div class="rating">
+                        <i class="fas fa-star"></i> 4.7
+                    </div>
+                    <p class="delivery-time">Est. Delivery: 35-50 min</p>
+                    <p class="delivery-fee">Delivery Fee: ₹40</p>
+                    <p class="min-order">Min. Order: ₹200</p>
+                    <a href="menu.html?restaurant=wok-roll" class="btn">View Menu</a>
+                </div>
+                <!-- Add more restaurant cards here, these would typically be dynamically loaded -->
+            </div>
+            <div class="pagination">
+                <button class="disabled">&laquo; Previous</button>
+                <span class="current-page">1</span>
+                <button>2</button>
+                <button>3</button>
+                <span>...</span>
+                <button>10</button>
+                <button>Next &raquo;</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">QuickBite</div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-customer-service">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Help & FAQs</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-social-apps">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+                <h3>Get the App</h3>
+                <div class="app-links">
+                    <a href="#"><img src="https://via.placeholder.com/120x40?text=App+Store" alt="App Store"></a>
+                    <a href="#"><img src="https://via.placeholder.com/120x40?text=Google+Play" alt="Google Play"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                &copy; 2023 QuickBite. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Example for dynamically updating cart count (if not already handled by script.js)
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartCountElement = document.querySelector('.cart-count');
+            let cartItems = JSON.parse(localStorage.getItem('quickbiteCart')) || [];
+            cartCountElement.textContent = cartItems.length;
+
+            // Conceptual JavaScript for filtering/sorting
+            const searchInput = document.querySelector('.filter-sort-bar input[type="text"]');
+            const selects = document.querySelectorAll('.filter-sort-bar select');
+
+            [searchInput, ...selects].forEach(element => {
+                element.addEventListener('change', () => {
+                    console.log('Filter/Sort changed:', {
+                        search: searchInput.value,
+                        cuisine: selects[0].value,
+                        dietary: selects[1].value,
+                        price: selects[2].value,
+                        rating: selects[3].value,
+                        sortBy: selects[4].value
+                    });
+                    // In a real application, this would trigger an AJAX call to fetch filtered/sorted restaurants
+                });
+            });
+
+            // Conceptual JavaScript for pagination
+            document.querySelectorAll('.pagination button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    if (!e.currentTarget.classList.contains('disabled')) {
+                        const page = e.currentTarget.textContent.replace(/[^\d]/g, ''); // Extract number
+                        console.log('Navigating to page:', page);
+                        alert(`Navigating to page ${page} is conceptual.`);
+                        // In a real app, this would update URL parameter and fetch data for the new page
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

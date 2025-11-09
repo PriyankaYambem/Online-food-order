@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBite - Sign In / Register</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Specific styles for the login/register page */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
+            background: var(--light-grey);
+            padding: 40px 0;
+        }
+
+        .auth-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .auth-box h2 {
+            margin-bottom: 30px;
+            color: var(--secondary-color);
+            font-size: 2rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--light-grey);
+        }
+
+        .auth-tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-color);
+            transition: color 0.3s ease, border-bottom 0.3s ease;
+        }
+
+        .auth-tab-btn.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .auth-form {
+            display: none; /* Hidden by default, shown by JS */
+            text-align: left;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="password"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .auth-submit-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .social-login {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-grey);
+        }
+
+        .social-login p {
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-buttons .btn {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #fff;
+            background: #4285F4; /* Google Blue */
+        }
+
+        .social-buttons .btn.facebook {
+            background: #3B5998; /* Facebook Blue */
+        }
+        .social-buttons .btn.google {
+            background: #DB4437; /* Google Red */
+        }
+
+        .social-buttons .btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .social-buttons .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .auth-box {
+                padding: 25px;
+                margin: 0 15px;
+            }
+            .auth-box h2 {
+                font-size: 1.8rem;
+            }
+            .auth-tabs {
+                margin-bottom: 20px;
+            }
+            .auth-tab-btn {
+                font-size: 1rem;
+                padding: 8px 15px;
+            }
+            .social-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .social-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">QuickBite</div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="restaurants.html">Restaurants</a></li>
+                    <li><a href="#how-it-works">How it Works</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="login.html" class="active-link">Sign In / Register</a>
+                <a href="cart.html" class="cart-icon"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="auth-container">
+            <div class="auth-box">
+                <h2>Welcome to QuickBite</h2>
+
+                <div class="auth-tabs">
+                    <button class="auth-tab-btn active" data-tab="login">Sign In</button>
+                    <button class="auth-tab-btn" data-tab="register">Register</button>
+                </div>
+
+                <!-- Sign In Form -->
+                <form id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-actions">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember-me" name="remember-me">
+                            <label for="remember-me">Remember Me</label>
+                        </div>
+                        <div class="forgot-password">
+                            <a href="#">Forgot Password?</a>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn auth-submit-btn">Sign In</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email Address</label>
+                        <input type="email" id="register-email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" name="password" placeholder="Create a password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" class="btn auth-submit-btn">Register</button>
+                </form>
+
+                <div class="social-login">
+                    <p>Or continue with</p>
+                    <div class="social-buttons">
+                        <a href="#" class="btn facebook"><i class="fab fa-facebook-f"></i> Facebook</a>
+                        <a href="#" class="btn google"><i class="fab fa-google"></i> Google</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">QuickBite</div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-customer-service">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Help & FAQs</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-social-apps">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+                <h3>Get the App</h3>
+                <div class="app-links">
+                    <a href="#"><img src="https://via.placeholder.com/120x40?text=App+Store" alt="App Store"></a>
+                    <a href="#"><img src="https://via.placeholder.com/120x40?text=Google+Play" alt="Google Play"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                &copy; 2023 QuickBite. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // JavaScript for handling the tab switching and form submission (conceptual)
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.auth-tab-btn');
+            const authForms = document.querySelectorAll('.auth-form');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.dataset.tab;
+
+                    // Deactivate all buttons and forms
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    authForms.forEach(form => form.classList.remove('active'));
+
+                    // Activate the clicked button and corresponding form
+                    button.classList.add('active');
+                    document.getElementById(`${targetTab}-form`).classList.add('active');
+                });
+            });
+
+            // Handle login form submission (conceptual)
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevent default form submission
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+
+                console.log('Login attempt:', { email, password });
+                alert('Login functionality is conceptual. In a real app, this would send data to a server.');
+
+                // In a real application:
+                // 1. Send data to your backend API for authentication.
+                // 2. Handle success (e.g., store token, redirect to dashboard) or error (display message).
+            });
+
+            // Handle register form submission (conceptual)
+            registerForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevent default form submission
+                const name = document.getElementById('register-name').value;
+                const email = document.getElementById('register-email').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+
+                console.log('Registration attempt:', { name, email, password });
+                alert('Registration functionality is conceptual. In a real app, this would send data to a server.');
+
+                // In a real application:
+                // 1. Send data to your backend API for user creation.
+                // 2. Handle success (e.g., show success message, log in automatically) or error.
+            });
+
+            // Social login buttons are placeholders
+            document.querySelectorAll('.social-buttons .btn').forEach(socialBtn => {
+                socialBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    alert(`Integrating with ${event.currentTarget.textContent.trim()} is conceptual.`);
+                    // In a real application, this would initiate OAuth flow
+                });
+            });
+
+            // Initialize cart count from script.js (if not already done globally)
+            const cartCountElement = document.querySelector('.cart-count');
+            let cartItems = JSON.parse(localStorage.getItem('quickbiteCart')) || [];
+            cartCountElement.textContent = cartItems.length;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBite - Your Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Specific styles for the Cart page */
+        .cart-hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1550995665-ac821098555e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80') no-repeat center center/cover;
+            color: #fff;
+            text-align: center;
+            padding: 80px 0;
+            margin-bottom: 40px;
+        }
+
+        .cart-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .cart-hero p {
+            font-size: 1.2rem;
+            color: #eee;
+        }
+
+        .cart-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* Cart items on left, summary on right */
+            gap: 40px;
+            padding: 60px 0;
+            align-items: flex-start; /* Aligns content to the top */
+        }
+
+        .cart-items {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .cart-items h2 {
+            text-align: left;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--light-grey);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-details h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+        }
+
+        .cart-item-details p {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .quantity-control button {
+            background: #f0f0f0;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--secondary-color);
+            transition: background 0.2s ease;
+        }
+
+        .quantity-control button:hover {
+            background: var(--light-grey);
+        }
+
+        .quantity-control button:first-child {
+            border-radius: 5px 0 0 5px;
+        }
+
+        .quantity-control button:last-child {
+            border-radius: 0 5px 5px 0;
+        }
+
+        .quantity-control input {
+            width: 40px;
+            text-align: center;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            -moz-animation: textfield; /* Firefox */
+        }
+        .quantity-control input::-webkit-outer-spin-button,
+        .quantity-control input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #dc3545; /* Red for delete */
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+
+        .remove-item-btn:hover {
+            color: #c82333;
+        }
+
+        .cart-item-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            flex-shrink: 0;
+            margin-left: 20px;
+            width: 100px; /* Fixed width for price to align */
+            text-align: right;
+        }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 50px 0;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .empty-cart-message .btn {
+            margin-top: 20px;
+        }
+
+
+        .cart-summary {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: sticky; /* Make it sticky */
+            top: 100px; /* Adjust based on header height */
+        }
+
+        .cart-summary h3 {
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--light-grey);
+        }
+
+        .summary-row:last-of-type {
+            border-bottom: none;
+            margin-bottom: 25px;
+            padding-bottom: 0;
+        }
+
+        .summary-row span:first-child {
+            color: var(--text-color);
+        }
+
+        .summary-row span:last-child {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .cart-content {
+                grid-template-columns: 1fr; /* Stack columns */
+                padding: 40px 20px;
+            }
+            .cart-summary {
+                position: static; /* Remove sticky on smaller screens */
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cart-item {
+                flex-wrap: wrap; /* Allow item details to wrap */
+                justify-content: space-between;
+            }
+            .cart-item-image {
+                margin-right: 15px;
+            }
+            .cart-item-details {
+                flex-basis: calc(100% - 100px); /* Adjust width */
+            }
+            .cart-item-price {
+                order: 1; /* Move price below image/details */
+                width: auto;
+                text-align: left;
+                margin-top: 10px;
+                margin-left: 0;
+                flex-basis: 100%;
+            }
+            .cart-item-controls {
+                order: 2; /* Move controls to second row */
+                flex-basis: 100%;
+                justify-content: flex-start;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">QuickBite</div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="restaurants.html">Restaurants</a></li>
+                    <li><a href="how-it-works.html">How it Works</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="login.html">Sign In / Register</a>
+                <a href="cart.html" class="cart-icon active-link"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="cart-hero">
+            <div class="container">
+                <h1>Your QuickBite Cart</h1>
+                <p>Review your delicious selection before checkout.</p>
+            </div>
+        </section>
+
+        <section class="cart-content container">
+            <div class="cart-items" id="cart-items-container">
+                <h2>Your Order</h2>
+
+                <!-- Example Cart Item (will be dynamically loaded by JS) -->
+                <!--
+                <div class="cart-item" data-item-id="pizza-margherita">
+                    <img src="https://via.placeholder.com/80x80?text=Pizza" alt="Margherita Pizza" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <h4>Margherita Pizza</h4>
+                        <p>from Luigi's Pizzeria</p>
+                        <div class="cart-item-controls">
+                            <div class="quantity-control">
+                                <button class="decrease-quantity">-</button>
+                                <input type="number" value="1" min="1" class="item-quantity">
+                                <button class="increase-quantity">+</button>
+                            </div>
+                            <button class="remove-item-btn"><i class="fas fa-trash-alt"></i> Remove</button>
+                        </div>
+                    </div>
+                    <span class="cart-item-price">₹450.00</span>
+                </div>
+                -->
+                <!-- End Example Cart Item -->
+
+                <div class="empty-cart-message" style="display: none;">
+                    Your cart is empty. <a href="restaurants.html" class="btn">Start Ordering!</a>
+                </div>
+
+            </div>
+
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="summary-subtotal">₹0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span id="summary-delivery-fee">₹50.00</span> <!-- Example fixed fee -->
+                </div>
+                <div class="summary-row">
+                    <span>Service Charge</span>
+                    <span id="summary-service-charge">₹10.00</span> <!-- Example fixed charge -->
+                </div>
+                <div class="summary-row">
+                    <span>GST (5%)</span>
+                    <span id="summary-gst">₹0.00</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="summary-total">₹0.00</span>
+                </div>
+                <a href="checkout.html" class="btn checkout-btn">Proceed to Checkout</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">QuickBite</div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-customer-service">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Help & FAQs</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-social-apps">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+                <h3>Get the App</h3>
+                <div class="app-links">
+                    <a href="#"><img src="https://via.placeholder.com/120x40?text=App+Store" alt="App Store"></a>
+                    <a href="#"><img src="https://via.placeholder.com/120x40?text=Google+Play" alt="Google Play"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                &copy; 2023 QuickBite. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const summarySubtotal = document.getElementById('summary-subtotal');
+            const summaryDeliveryFee = document.getElementById('summary-delivery-fee');
+            const summaryServiceCharge = document.getElementById('summary-service-charge');
+            const summaryGST = document.getElementById('summary-gst');
+            const summaryTotal = document.getElementById('summary-total');
+            const emptyCartMessage = document.querySelector('.empty-cart-message');
+            const cartCountElement = document.querySelector('.cart-count');
+            const checkoutButton = document.querySelector('.checkout-btn');
+
+            const DELIVERY_FEE = 50; // Example fixed delivery fee in INR
+            const SERVICE_CHARGE = 10; // Example fixed service charge in INR
+            const GST_RATE = 0.05; // 5% GST
+
+            let cart = JSON.parse(localStorage.getItem('quickbiteCart')) || [];
+
+            function saveCart() {
+                localStorage.setItem('quickbiteCart', JSON.stringify(cart));
+            }
+
+            function updateCartCount() {
+                cartCountElement.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+            }
+
+            function calculateSummary() {
+                let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                let gstAmount = (subtotal + DELIVERY_FEE + SERVICE_CHARGE) * GST_RATE;
+                let total = subtotal + DELIVERY_FEE + SERVICE_CHARGE + gstAmount;
+
+                summarySubtotal.textContent = `₹${subtotal.toFixed(2)}`;
+                summaryDeliveryFee.textContent = `₹${DELIVERY_FEE.toFixed(2)}`;
+                summaryServiceCharge.textContent = `₹${SERVICE_CHARGE.toFixed(2)}`;
+                summaryGST.textContent = `₹${gstAmount.toFixed(2)}`;
+                summaryTotal.textContent = `₹${total.toFixed(2)}`;
+
+                // Enable/disable checkout button and show empty cart message
+                if (cart.length === 0) {
+                    emptyCartMessage.style.display = 'block';
+                    checkoutButton.classList.add('disabled'); // Add a disabled style
+                    checkoutButton.setAttribute('disabled', 'true');
+                    cartItemsContainer.querySelector('h2').style.display = 'none'; // Hide "Your Order" title
+                } else {
+                    emptyCartMessage.style.display = 'none';
+                    checkoutButton.classList.remove('disabled');
+                    checkoutButton.removeAttribute('disabled');
+                    cartItemsContainer.querySelector('h2').style.display = 'block';
+                }
+            }
+
+            function renderCartItems() {
+                cartItemsContainer.innerHTML = '<h2>Your Order</h2>'; // Clear existing items but keep title
+                if (cart.length === 0) {
+                    emptyCartMessage.style.display = 'block';
+                } else {
+                    emptyCartMessage.style.display = 'none';
+                    cart.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        itemElement.classList.add('cart-item');
+                        itemElement.dataset.itemId = item.id;
+                        itemElement.innerHTML = `
+                            <img src="${item.image || 'https://via.placeholder.com/80x80?text=Food'}" alt="${item.name}" class="cart-item-image">
+                            <div class="cart-item-details">
+                                <h4>${item.name}</h4>
+                                <p>${item.restaurantName ? `from ${item.restaurantName}` : ''}</p>
+                                <div class="cart-item-controls">
+                                    <div class="quantity-control">
+                                        <button class="decrease-quantity">-</button>
+                                        <input type="number" value="${item.quantity}" min="1" class="item-quantity">
+                                        <button class="increase-quantity">+</button>
+                                    </div>
+                                    <button class="remove-item-btn"><i class="fas fa-trash-alt"></i> Remove</button>
+                                </div>
+                            </div>
+                            <span class="cart-item-price">₹${(item.price * item.quantity).toFixed(2)}</span>
+                        `;
+                        cartItemsContainer.appendChild(itemElement);
+                    });
+                }
+                attachCartEventListeners();
+                calculateSummary();
+                updateCartCount();
+            }
+
+            function attachCartEventListeners() {
+                cartItemsContainer.querySelectorAll('.decrease-quantity').forEach(button => {
+                    button.onclick = (e) => {
+                        const itemId = e.target.closest('.cart-item').dataset.itemId;
+                        const item = cart.find(i => i.id === itemId);
+                        if (item && item.quantity > 1) {
+                            item.quantity--;
+                            saveCart();
+                            renderCartItems();
+                        }
+                    };
+                });
+
+                cartItemsContainer.querySelectorAll('.increase-quantity').forEach(button => {
+                    button.onclick = (e) => {
+                        const itemId = e.target.closest('.cart-item').dataset.itemId;
+                        const item = cart.find(i => i.id === itemId);
+                        if (item) {
+                            item.quantity++;
+                            saveCart();
+                            renderCartItems();
+                        }
+                    };
+                });
+
+                cartItemsContainer.querySelectorAll('.item-quantity').forEach(input => {
+                    input.onchange = (e) => {
+                        const itemId = e.target.closest('.cart-item').dataset.itemId;
+                        const item = cart.find(i => i.id === itemId);
+                        const newQuantity = parseInt(e.target.value);
+                        if (item && !isNaN(newQuantity) && newQuantity >= 1) {
+                            item.quantity = newQuantity;
+                            saveCart();
+                            renderCartItems();
+                        } else {
+                            e.target.value = item ? item.quantity : 1; // Revert to old value if invalid
+                        }
+                    };
+                });
+
+                cartItemsContainer.querySelectorAll('.remove-item-btn').forEach(button => {
+                    button.onclick = (e) => {
+                        const itemId = e.target.closest('.cart-item').dataset.itemId;
+                        cart = cart.filter(item => item.id !== itemId);
+                        saveCart();
+                        renderCartItems();
+                    };
+                });
+            }
+
+            // Initial render when the page loads
+            renderCartItems();
+
+            // Link to checkout (conceptual)
+            checkoutButton.addEventListener('click', (e) => {
+                if (cart.length === 0) {
+                    e.preventDefault(); // Prevent navigation if cart is empty
+                    alert('Your cart is empty. Please add items before proceeding to checkout.');
+                }
+                // Otherwise, the href="checkout.html" will handle navigation
+            });
+        });
+
+        // This addToCart function is a placeholder and should ideally be globally available in script.js
+        // or imported if using modules. For this example, it's defined in index.html and menu.html's
+        // inline scripts. Ensure consistency.
+        // For demonstration, let's include a robust addToCart here that also adds a restaurant name
+        function addToCart(itemId, itemName, price, quantity = 1, restaurantName = '', itemImage = '') {
+            let cart = JSON.parse(localStorage.getItem('quickbiteCart')) || [];
+            const existingItemIndex = cart.findIndex(item => item.id === itemId);
+
+            if (existingItemIndex > -1) {
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                cart.push({ id: itemId, name: itemName, price: price, quantity: quantity, restaurantName: restaurantName, image: itemImage });
+            }
+
+            localStorage.setItem('quickbiteCart', JSON.stringify(cart));
+            // No need to update cart count here on cart.html, as renderCartItems() does it
+            // alert(`${itemName} added to cart!`);
+            // Optionally, re-render cart if on cart page
+            if (document.getElementById('cart-items-container')) {
+                document.dispatchEvent(new Event('DOMContentLoaded')); // Re-trigger page load logic for cart
+            }
+        }
+    </script>
+</body>
+</html>
